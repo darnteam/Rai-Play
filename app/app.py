@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from views import routers
 import uvicorn
 from fastapi.routing import APIRouter
+from starlette.middleware.sessions import SessionMiddleware
+import os
+from configuration import SESSION_SECRET_KEY
 
 def create_app() -> FastAPI:
     """
@@ -23,6 +26,11 @@ def create_app() -> FastAPI:
     return app
 
 app: FastAPI = create_app()
+
+app.add_middleware(
+    SessionMiddleware,
+    secret_key= SESSION_SECRET_KEY
+)
 
 if __name__ == "__main__":
     # Run the application with live reloading
