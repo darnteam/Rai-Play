@@ -1,0 +1,50 @@
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# Environment variables
+.env
+.env.*
+
+# VSCode config (optional)
+.vscode/
+
+# Log files
+*.log
+
+# pytest
+.cache/
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+
+# Coverage reports
+htmlcov/
+coverage.xml
+*.cover
+*.py,cover
+
+# Database files (if using SQLite or similar)
+*.db
+*.sqlite3
+*.sql
+*.dump
+
+# Pydantic-generated files (if any)
+__pydantic_model__.json
+
+# Docker-related (optional)
+*.pid
+*.tar
+*.img
+*.container
+docker-compose.override.yml
