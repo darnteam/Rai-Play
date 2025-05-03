@@ -83,23 +83,6 @@ class QuestStoryline(Base):
     game = relationship("Game", back_populates="storyline")
 
 
-# ======================
-# USER QUEST PROGRESS
-# ======================
-class UserQuestProgress(Base):
-    __tablename__ = "user_quest_progress"
-
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
-    game_id = Column(Integer, ForeignKey("games.id", ondelete="CASCADE"))
-    completed = Column(Boolean, default=False)
-    progress = Column(Integer, default=0)
-    completed_at = Column(TIMESTAMP)
-    last_updated = Column(TIMESTAMP, default=datetime.utcnow)
-
-    user = relationship("User", back_populates="quest_progress")
-    game = relationship("Game", back_populates="quest_progress")
-
 
 # ======================
 # ACHIEVEMENTS

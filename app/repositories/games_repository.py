@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from database.connection import get_db
-from models import UserGame, Game
+from models import UserGame, Game, QuestStoryline
 
 class GameRepository:
     """
@@ -25,3 +25,23 @@ class GameRepository:
         Returns all games with the given game_type.
         """
         return self.db.query(Game).filter(Game.game_type == game_type).all()
+
+    def fetch_quest_storyline_games(self):
+        """
+        Returns games in quest storyline ordered by order_index.
+        """
+        storyline_entries = (
+            self.db.query(QuestStoryline)
+            .order_by(QuestStoryline.order_index)
+            .all()
+        )
+
+        game_ids = [entry.game_id for entry in storyline_entries]
+
+        # Keep the order using an index map
+        id_to_index = {id_: idx for idx, id_ in enumerate(game_ids)}
+        
+        games = self.db.query(Game).filter(Game.id.in_(game_ids)).all()
+        games_sorted = sorted(games, key=lambda game: id_to_index[game.id])
+
+        return games_sorted

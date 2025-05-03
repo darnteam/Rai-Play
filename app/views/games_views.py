@@ -24,3 +24,12 @@ def get_all_minigames():
     """
     service = GameService()
     return service.get_all_minigames()
+
+
+@router.get("/quests/storyline", response_model=List[GameResponse])
+def get_quest_storyline():
+    """
+    Returns quest storyline games ordered by order_index.
+    """
+    service = GameService()
+    return service.get_quest_storyline()

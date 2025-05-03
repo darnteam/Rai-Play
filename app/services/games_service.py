@@ -23,3 +23,10 @@ class GameService:
         """
         games = self.repository.fetch_games_by_type("minigame")
         return [GameResponse.model_validate(game) for game in games]
+    
+    def get_quest_storyline(self) -> List[GameResponse]:
+        """
+        Fetches and returns games in the quest storyline ordered by order_index.
+        """
+        games = self.repository.fetch_quest_storyline_games()
+        return [GameResponse.model_validate(game) for game in games]
