@@ -1,6 +1,7 @@
 from models.dtos import UserResponse
 from repositories.user_repository import UserRepository
 from fastapi import HTTPException, status
+from typing import List
 
 class UserService:
     """
@@ -30,3 +31,11 @@ class UserService:
                 detail="User not found"
             )
         return UserResponse.model_validate(user)
+    
+    def get_users_leaderboard(self) -> List[UserResponse]:
+        """
+        Get all users sorted by XP in descending order.
+        """
+        users = self.user_repository.fetch_all_users()
+        sorted_users = sorted(users, key=lambda user: user.xp, reverse=True)
+        return [UserResponse.model_validate(user) for user in sorted_users]

@@ -22,3 +22,9 @@ class UserRepository:
             Optional[User]: User if found, else None.
         """
         return self.db.query(User).filter(User.id == user_id).first()
+    
+    def fetch_all_users(self):
+        """
+            Retrieve all users from the database.
+        """
+        return self.db.query(User).all()
