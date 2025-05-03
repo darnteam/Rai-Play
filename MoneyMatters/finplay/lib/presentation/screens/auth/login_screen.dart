@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
-import '../home_screen.dart';
+import '../../../services/api_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,21 +11,40 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
   bool _isLoading = false;
+  String? _errorMessage;
 
-  void _handleLogin() {
+  Future<void> _handleLogin() async {
     if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
-
-      // Simulate login delay
-      Future.delayed(const Duration(seconds: 1), () {
-        setState(() => _isLoading = false);
-        // Navigate to home screen using named route
-        Navigator.pushReplacementNamed(context, '/home');
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
       });
+
+      try {
+        final response = await ApiService.login(
+          _usernameController.text,
+          _passwordController.text,
+        );
+
+        if (mounted) {
+          // Handle successful login
+          Navigator.pushReplacementNamed(context, '/home');
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() {
+            _errorMessage = e.toString().replaceAll('Exception: ', '');
+          });
+        }
+      } finally {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
+      }
     }
   }
 
@@ -35,14 +54,13 @@ class _LoginScreenState extends State<LoginScreen> {
     // Simulate Google login delay
     Future.delayed(const Duration(seconds: 1), () {
       setState(() => _isLoading = false);
-      // Navigate to home screen using named route
       Navigator.pushReplacementNamed(context, '/home');
     });
   }
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -94,6 +112,23 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                   ),
 
+                  if (_errorMessage != null) ...[
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.red.withOpacity(0.3)),
+                      ),
+                      child: Text(
+                        _errorMessage!,
+                        style: const TextStyle(color: Colors.red),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+
                   const SizedBox(height: 48),
 
                   // Login form
@@ -109,12 +144,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            // Email field
+                            // Username field
                             TextFormField(
-                              controller: _emailController,
-                              keyboardType: TextInputType.emailAddress,
+                              controller: _usernameController,
                               decoration: InputDecoration(
-                                labelText: 'Email or Username',
+                                labelText: 'Username',
                                 prefixIcon: const Icon(Icons.person_outline),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -122,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter your email or username';
+                                  return 'Please enter your username';
                                 }
                                 return null;
                               },

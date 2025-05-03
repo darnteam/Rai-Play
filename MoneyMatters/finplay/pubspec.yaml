@@ -36,6 +36,9 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   
+  # Network
+  http: ^1.2.0
+  
   # Utils
   intl: ^0.18.1
   equatable: ^2.0.5
@@ -55,7 +58,6 @@ flutter:
   
   assets:
     - assets/images/
-    - assets/images/google_logo.png
     - assets/lottie/
     - assets/icons/
     - assets/rive/

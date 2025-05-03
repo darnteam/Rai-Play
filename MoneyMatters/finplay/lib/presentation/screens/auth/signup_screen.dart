@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
-import '../home_screen.dart';
+import '../../../services/api_service.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -18,17 +18,37 @@ class _SignupScreenState extends State<SignupScreen> {
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
   bool _isLoading = false;
+  String? _errorMessage;
 
-  void _handleSignup() {
+  Future<void> _handleSignup() async {
     if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
-
-      // Simulate signup delay
-      Future.delayed(const Duration(seconds: 1), () {
-        setState(() => _isLoading = false);
-        // Navigate to home screen using named route
-        Navigator.pushReplacementNamed(context, '/home');
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
       });
+
+      try {
+        final response = await ApiService.signup(
+          _usernameController.text,
+          _emailController.text,
+          _passwordController.text,
+        );
+
+        if (mounted) {
+          // Handle successful signup
+          Navigator.pushReplacementNamed(context, '/home');
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() {
+            _errorMessage = e.toString().replaceAll('Exception: ', '');
+          });
+        }
+      } finally {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
+      }
     }
   }
 
@@ -87,6 +107,23 @@ class _SignupScreenState extends State<SignupScreen> {
                           color: Colors.white.withOpacity(0.8),
                         ),
                   ),
+
+                  if (_errorMessage != null) ...[
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.red.withOpacity(0.3)),
+                      ),
+                      child: Text(
+                        _errorMessage!,
+                        style: const TextStyle(color: Colors.red),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
 
                   const SizedBox(height: 48),
 
