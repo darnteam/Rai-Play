@@ -49,16 +49,6 @@ CREATE TABLE quest_storyline (
     UNIQUE(order_index)
 );
 
--- ==========================
--- BADGES
--- ==========================
-CREATE TABLE badges (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    description TEXT,
-    icon_url TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
 
 
 -- ==========================

@@ -86,20 +86,6 @@ class QuestStoryline(Base):
     )
 
 
-# ==========================
-# BADGES
-# ==========================
-class Badge(Base):
-    __tablename__ = 'badges'
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String(100), nullable=False)
-    description = Column(Text)
-    icon_url = Column(Text)
-    created_at = Column(DateTime, server_default=func.now())
-
-    # Relationships
-    achievements = relationship("Achievement", back_populates="badge")
 
 
 # ==========================
