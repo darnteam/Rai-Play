@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:confetti/confetti.dart';
 import 'dart:math';
-import '../theme/app_theme.dart';
+import '../../theme/app_theme.dart';
 
 // Game state providers
 final gameStateProvider = StateNotifierProvider<GameStateNotifier, GameState>((ref) {

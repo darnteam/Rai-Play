@@ -1,6 +1,6 @@
 import 'package:finplay/presentation/widgets/draggable_item.dart';
 import 'package:flutter/material.dart';
-import '../screens/lemonade_budget_game.dart';
+import '../screens/games/lemonade_budget_game.dart';
 
 class BudgetCategory extends StatelessWidget {
   final String title;

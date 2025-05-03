@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'draggable_item.dart';
-import '../screens/lemonade_budget_game.dart';
+import '../screens/games/lemonade_budget_game.dart';
 
 class BudgetingScreen extends StatefulWidget {
   final double budget;

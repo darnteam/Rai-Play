@@ -3,13 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/game_category_card.dart';
 import '../widgets/game_card.dart';
-import 'impulse_invaders_screen.dart';
-import 'savings_builder_screen.dart';
-import 'budget_rush_screen.dart';
-import 'investor_island_screen.dart';
-import 'credit_quest_screen.dart';
-import 'crypto_craze_screen.dart';
-import 'bank_rush_screen.dart';
+import 'games/impulse_invaders_screen.dart';
+import 'games/savings_builder_screen.dart';
+import 'games/budget_rush_screen.dart';
+import 'games/investor_island_screen.dart';
+import 'games/credit_quest_screen.dart';
+import 'games/crypto_craze_screen.dart';
+import 'games/bank_rush_screen.dart';
 
 class GamesScreen extends ConsumerStatefulWidget {
   const GamesScreen({super.key});

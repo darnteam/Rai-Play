@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:ui';
 import 'dart:math';
 import '../widgets/quest_node.dart';
-import 'lemonade_budget_game.dart';
+import 'games/lemonade_budget_game.dart';
 
 class QuestMapScreen extends ConsumerStatefulWidget {
   const QuestMapScreen({super.key});

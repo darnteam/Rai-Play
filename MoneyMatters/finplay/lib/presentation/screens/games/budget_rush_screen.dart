@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:confetti/confetti.dart';
 import 'dart:math';
-import '../theme/app_theme.dart';
+import '../../theme/app_theme.dart';
 
 // Game state providers
-final gameStateProvider = StateNotifierProvider<GameStateNotifier, GameState>((ref) {
+final gameStateProvider =
+    StateNotifierProvider<GameStateNotifier, GameState>((ref) {
   return GameStateNotifier();
 });
 
@@ -196,7 +197,8 @@ class GameStateNotifier extends StateNotifier<GameState> {
     // Remove power-up after duration
     Future.delayed(powerUp.duration, () {
       if (!state.isGameOver) {
-        final updatedPowerUps = state.activePowerUps.where((p) => p != powerUp).toList();
+        final updatedPowerUps =
+            state.activePowerUps.where((p) => p != powerUp).toList();
         state = state.copyWith(activePowerUps: updatedPowerUps);
       }
     });
@@ -344,16 +346,86 @@ class TimerNotifier extends StateNotifier<int> {
 
 // Shopping items database
 final List<Map<String, dynamic>> _shoppingItems = [
-  {'name': 'Lunch Wrap', 'price': 5.0, 'isNeed': true, 'emoji': '🍔', 'category': 'Food', 'effect': 'Restores energy'},
-  {'name': 'Bus Fare', 'price': 3.0, 'isNeed': true, 'emoji': '🚌', 'category': 'Transport', 'effect': 'Essential travel'},
-  {'name': 'New T-shirt', 'price': 15.0, 'isNeed': false, 'emoji': '👕', 'category': 'Clothing', 'effect': 'Style boost'},
-  {'name': 'School Supplies', 'price': 8.0, 'isNeed': true, 'emoji': '📚', 'category': 'Education', 'effect': 'Learning boost'},
-  {'name': 'Movie Ticket', 'price': 12.0, 'isNeed': false, 'emoji': '🎬', 'category': 'Entertainment', 'effect': 'Fun boost'},
-  {'name': 'Snacks', 'price': 4.0, 'isNeed': false, 'emoji': '🍿', 'category': 'Food', 'effect': 'Small happiness boost'},
-  {'name': 'Phone Credit', 'price': 10.0, 'isNeed': true, 'emoji': '📱', 'category': 'Communication', 'effect': 'Connectivity boost'},
-  {'name': 'New Game', 'price': 25.0, 'isNeed': false, 'emoji': '🎮', 'category': 'Entertainment', 'effect': 'Major fun boost'},
-  {'name': 'Gym Membership', 'price': 20.0, 'isNeed': true, 'emoji': '💪', 'category': 'Health', 'effect': 'Health boost'},
-  {'name': 'Concert Tickets', 'price': 30.0, 'isNeed': false, 'emoji': '🎵', 'category': 'Entertainment', 'effect': 'Major happiness boost'},
+  {
+    'name': 'Lunch Wrap',
+    'price': 5.0,
+    'isNeed': true,
+    'emoji': '🍔',
+    'category': 'Food',
+    'effect': 'Restores energy'
+  },
+  {
+    'name': 'Bus Fare',
+    'price': 3.0,
+    'isNeed': true,
+    'emoji': '🚌',
+    'category': 'Transport',
+    'effect': 'Essential travel'
+  },
+  {
+    'name': 'New T-shirt',
+    'price': 15.0,
+    'isNeed': false,
+    'emoji': '👕',
+    'category': 'Clothing',
+    'effect': 'Style boost'
+  },
+  {
+    'name': 'School Supplies',
+    'price': 8.0,
+    'isNeed': true,
+    'emoji': '📚',
+    'category': 'Education',
+    'effect': 'Learning boost'
+  },
+  {
+    'name': 'Movie Ticket',
+    'price': 12.0,
+    'isNeed': false,
+    'emoji': '🎬',
+    'category': 'Entertainment',
+    'effect': 'Fun boost'
+  },
+  {
+    'name': 'Snacks',
+    'price': 4.0,
+    'isNeed': false,
+    'emoji': '🍿',
+    'category': 'Food',
+    'effect': 'Small happiness boost'
+  },
+  {
+    'name': 'Phone Credit',
+    'price': 10.0,
+    'isNeed': true,
+    'emoji': '📱',
+    'category': 'Communication',
+    'effect': 'Connectivity boost'
+  },
+  {
+    'name': 'New Game',
+    'price': 25.0,
+    'isNeed': false,
+    'emoji': '🎮',
+    'category': 'Entertainment',
+    'effect': 'Major fun boost'
+  },
+  {
+    'name': 'Gym Membership',
+    'price': 20.0,
+    'isNeed': true,
+    'emoji': '💪',
+    'category': 'Health',
+    'effect': 'Health boost'
+  },
+  {
+    'name': 'Concert Tickets',
+    'price': 30.0,
+    'isNeed': false,
+    'emoji': '🎵',
+    'category': 'Entertainment',
+    'effect': 'Major happiness boost'
+  },
 ];
 
 class BudgetRushScreen extends ConsumerStatefulWidget {
@@ -363,7 +435,8 @@ class BudgetRushScreen extends ConsumerStatefulWidget {
   ConsumerState<BudgetRushScreen> createState() => _BudgetRushScreenState();
 }
 
-class _BudgetRushScreenState extends ConsumerState<BudgetRushScreen> with SingleTickerProviderStateMixin {
+class _BudgetRushScreenState extends ConsumerState<BudgetRushScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _slideAnimation;
   late Animation<double> _fadeAnimation;
@@ -422,7 +495,8 @@ class _BudgetRushScreenState extends ConsumerState<BudgetRushScreen> with Single
     _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeIn),
     );
-    _confettiController = ConfettiController(duration: const Duration(seconds: 3));
+    _confettiController =
+        ConfettiController(duration: const Duration(seconds: 3));
     _startGame();
   }
 
@@ -513,10 +587,13 @@ class _BudgetRushScreenState extends ConsumerState<BudgetRushScreen> with Single
     final gameState = ref.read(gameStateProvider);
     final needsCount = gameState.purchases.where((p) => p.isNeed).length;
     final wantsCount = gameState.purchases.where((p) => !p.isNeed).length;
-    final needsPercentage = gameState.purchases.isEmpty ? 0 : (needsCount / gameState.purchases.length * 100).round();
+    final needsPercentage = gameState.purchases.isEmpty
+        ? 0
+        : (needsCount / gameState.purchases.length * 100).round();
 
     // Check for newly unlocked achievements
-    final newAchievements = gameState.achievements.where((a) => a.isUnlocked).toList();
+    final newAchievements =
+        gameState.achievements.where((a) => a.isUnlocked).toList();
 
     showDialog(
       context: context,
@@ -546,7 +623,10 @@ class _BudgetRushScreenState extends ConsumerState<BudgetRushScreen> with Single
                     children: [
                       Text(
                         'Score: ${gameState.score}',
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium
+                            ?.copyWith(
                               color: Theme.of(context).primaryColor,
                               fontWeight: FontWeight.bold,
                             ),
@@ -591,7 +671,8 @@ class _BudgetRushScreenState extends ConsumerState<BudgetRushScreen> with Single
                   ),
                   const SizedBox(height: 8),
                   ...newAchievements.map((achievement) => ListTile(
-                        leading: Text(achievement.icon, style: const TextStyle(fontSize: 24)),
+                        leading: Text(achievement.icon,
+                            style: const TextStyle(fontSize: 24)),
                         title: Text(achievement.name),
                         subtitle: Text(achievement.description),
                       )),
@@ -602,10 +683,13 @@ class _BudgetRushScreenState extends ConsumerState<BudgetRushScreen> with Single
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: needsPercentage >= 70 ? Colors.green[50] : Colors.orange[50],
+                    color: needsPercentage >= 70
+                        ? Colors.green[50]
+                        : Colors.orange[50],
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: needsPercentage >= 70 ? Colors.green : Colors.orange,
+                      color:
+                          needsPercentage >= 70 ? Colors.green : Colors.orange,
                     ),
                   ),
                   child: Column(
@@ -613,7 +697,9 @@ class _BudgetRushScreenState extends ConsumerState<BudgetRushScreen> with Single
                       Text(
                         _getFeedbackMessage(needsPercentage, gameState.budget),
                         style: TextStyle(
-                          color: needsPercentage >= 70 ? Colors.green[700] : Colors.orange[700],
+                          color: needsPercentage >= 70
+                              ? Colors.green[700]
+                              : Colors.orange[700],
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
@@ -622,7 +708,9 @@ class _BudgetRushScreenState extends ConsumerState<BudgetRushScreen> with Single
                       Text(
                         _getFeedbackTip(needsPercentage, gameState.budget),
                         style: TextStyle(
-                          color: needsPercentage >= 70 ? Colors.green[600] : Colors.orange[600],
+                          color: needsPercentage >= 70
+                              ? Colors.green[600]
+                              : Colors.orange[600],
                           fontSize: 12,
                         ),
                         textAlign: TextAlign.center,
@@ -770,7 +858,8 @@ class _BudgetRushScreenState extends ConsumerState<BudgetRushScreen> with Single
                             children: [
                               Text(
                                 _getTutorialText(),
-                                style: Theme.of(context).textTheme.headlineSmall,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
                                 textAlign: TextAlign.center,
                               ),
                               const SizedBox(height: 32),
@@ -927,7 +1016,8 @@ class _BudgetRushScreenState extends ConsumerState<BudgetRushScreen> with Single
     );
   }
 
-  Widget _buildStatCard(String label, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+      String label, String value, IconData icon, Color color) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -977,11 +1067,15 @@ class _BudgetRushScreenState extends ConsumerState<BudgetRushScreen> with Single
               child: Container(
                 width: 60,
                 decoration: BoxDecoration(
-                  color: isActive ? Theme.of(context).primaryColor : Colors.grey[200],
+                  color: isActive
+                      ? Theme.of(context).primaryColor
+                      : Colors.grey[200],
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: isActive ? Theme.of(context).primaryColor.withOpacity(0.3) : Colors.black.withOpacity(0.1),
+                      color: isActive
+                          ? Theme.of(context).primaryColor.withOpacity(0.3)
+                          : Colors.black.withOpacity(0.1),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -1050,11 +1144,15 @@ class _BudgetRushScreenState extends ConsumerState<BudgetRushScreen> with Single
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: _currentItem!['isNeed'] ? Colors.green[50] : Colors.orange[50],
+                color: _currentItem!['isNeed']
+                    ? Colors.green[50]
+                    : Colors.orange[50],
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: (_currentItem!['isNeed'] ? Colors.green : Colors.orange).withOpacity(0.2),
+                    color:
+                        (_currentItem!['isNeed'] ? Colors.green : Colors.orange)
+                            .withOpacity(0.2),
                     blurRadius: 12,
                     spreadRadius: 4,
                   ),
@@ -1099,13 +1197,17 @@ class _BudgetRushScreenState extends ConsumerState<BudgetRushScreen> with Single
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: _currentItem!['isNeed'] ? Colors.green[100] : Colors.orange[100],
+                    color: _currentItem!['isNeed']
+                        ? Colors.green[100]
+                        : Colors.orange[100],
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
                     _currentItem!['isNeed'] ? 'Need' : 'Want',
                     style: TextStyle(
-                      color: _currentItem!['isNeed'] ? Colors.green[800] : Colors.orange[800],
+                      color: _currentItem!['isNeed']
+                          ? Colors.green[800]
+                          : Colors.orange[800],
                       fontWeight: FontWeight.bold,
                     ),
                   ),

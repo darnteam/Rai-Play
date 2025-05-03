@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:lottie/lottie.dart';
-import '../widgets/draggable_item.dart';
-import '../widgets/budgeting_screen.dart';
-import '../widgets/planning_screen.dart';
-import '../widgets/customer_serving.dart';
-import '../widgets/summary_screen.dart';
-import '../screens/quest_map_screen.dart';
+import '../../widgets/draggable_item.dart';
+import '../../widgets/budgeting_screen.dart';
+import '../../widgets/planning_screen.dart';
+import '../../widgets/customer_serving.dart';
+import '../../widgets/summary_screen.dart';
+import '../../screens/quest_map_screen.dart';
 
 enum ItemCategory { needs, wants }
 
