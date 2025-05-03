@@ -4,6 +4,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship, declarative_base
 import enum
 from datetime import datetime
+from enum import Enum
 
 Base = declarative_base()
 
@@ -11,15 +12,15 @@ Base = declarative_base()
 # ======================
 # ENUMS
 # ======================
-class RewardType(enum.Enum):
+class RewardType(Enum):
     xp = "xp"
     coins = "coins"
     badge = "badge"
 
 
-class GameType(enum.Enum):
-    quest = "quest"
-    minigame = "minigame"
+class GameType(Enum):
+    QUEST = "quest"
+    MINIGAME = "minigame"
 
 
 # ======================

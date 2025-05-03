@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
-from enums import GameType  # Your enum definition
+from models import GameType  
 
 class GameResponse(BaseModel):
     id: int
