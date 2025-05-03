@@ -97,15 +97,6 @@ CREATE TABLE user_achievements (
     UNIQUE(user_id, achievement_id)
 );
 
--- ==========================
--- STREAK TRACKER
--- ==========================
-CREATE TABLE user_streaks (
-    user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
-    current_streak INTEGER DEFAULT 0,
-    longest_streak INTEGER DEFAULT 0,
-    last_checkin DATE
-);
 
 -- ==========================
 -- VIDEOS (TikTok Style)
@@ -139,24 +130,6 @@ CREATE TABLE user_games (
     completed BOOLEAN DEFAULT FALSE,
     played_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(user_id, game_id)
-);
-
--- ==========================
--- LEADERBOARD
--- ==========================
-CREATE TABLE leaderboards (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    type VARCHAR(50), -- e.g. 'xp', 'coins', 'streak'
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE leaderboard_entries (
-    id SERIAL PRIMARY KEY,
-    leaderboard_id INTEGER REFERENCES leaderboards(id) ON DELETE CASCADE,
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    score INTEGER NOT NULL,
-    recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ==========================

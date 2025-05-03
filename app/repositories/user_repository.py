@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import User
+from models import User, Achievement, UserAchievement
 from typing import Optional
 from database.connection import get_db
 
@@ -28,3 +28,15 @@ class UserRepository:
             Retrieve all users from the database.
         """
         return self.db.query(User).all()
+    
+    def fetch_user_badges(self, user_id: int):
+        """
+        Get all achievements of type 'badge' for the given user.
+        """
+        return (
+            self.db.query(Achievement)
+            .join(UserAchievement, UserAchievement.achievement_id == Achievement.id)
+            .filter(UserAchievement.user_id == user_id)
+            .filter(Achievement.reward_type == "badge")
+            .all()
+        )

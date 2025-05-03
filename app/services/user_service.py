@@ -1,5 +1,6 @@
 from models.dtos import UserResponse
 from repositories.user_repository import UserRepository
+from models.dtos import AchievementResponse
 from fastapi import HTTPException, status
 from typing import List
 
@@ -39,3 +40,10 @@ class UserService:
         users = self.user_repository.fetch_all_users()
         sorted_users = sorted(users, key=lambda user: user.xp, reverse=True)
         return [UserResponse.model_validate(user) for user in sorted_users]
+
+    def get_user_badges(self, user_id: int) -> List[AchievementResponse]:
+        """
+        Returns all badge-type achievements for the given user.
+        """
+        achievements = self.user_repository.fetch_user_badges(user_id)
+        return [AchievementResponse.model_validate(a) for a in achievements]

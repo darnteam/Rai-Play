@@ -1,1 +1,1 @@
-from .models import User, Game, Leaderboard, Video, UserSavedVideo, UserGame, LeaderboardEntry
+from .models import User, Game, Leaderboard, Video, UserSavedVideo, UserGame, LeaderboardEntry,Achievement,UserAchievement
