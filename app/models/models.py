@@ -186,6 +186,7 @@ class UserGame(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
     game_id = Column(Integer, ForeignKey("games.id", ondelete="CASCADE"))
+    completed = Column(Boolean, default=False)
     played_at = Column(TIMESTAMP, default=datetime.utcnow)
 
     user = relationship("User", back_populates="played_games")

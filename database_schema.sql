@@ -136,6 +136,7 @@ CREATE TABLE user_games (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     game_id INTEGER REFERENCES games(id) ON DELETE CASCADE,
+    completed BOOLEAN DEFAULT FALSE,
     played_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(user_id, game_id)
 );
