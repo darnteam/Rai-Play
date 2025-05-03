@@ -34,6 +34,7 @@ CREATE TABLE games (
     category VARCHAR(50), -- e.g. crypto, debit, credit
     xp_reward INTEGER DEFAULT 0,
     coin_reward INTEGER DEFAULT 0,
+    achievement_id INTEGER REFERENCES achievements(id) ON DELETE SET NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

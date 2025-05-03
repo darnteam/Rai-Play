@@ -37,3 +37,17 @@ class GameService:
         """
         games = self.repository.fetch_quest_storyline_games()
         return [GameResponse.model_validate(game) for game in games]
+    
+    def complete_game(self, user_id: int, game_id: int):
+        # Mark the game as completed
+        self.repository.mark_game_completed(user_id, game_id)
+
+        # Get game rewards
+        game = self.repository.get_game_by_id(game_id)
+
+        # Update user's XP and coins
+        self.repository.add_rewards_to_user(user_id, xp=game.xp_reward, coins=game.coins_reward)
+
+        # Assign achievement if not already present
+        if game.achievement_id:
+            self.repository.assign_achievement_if_missing(user_id, game.achievement_id)

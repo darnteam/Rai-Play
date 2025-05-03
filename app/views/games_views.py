@@ -34,5 +34,12 @@ def get_quest_storyline():
     """
     Returns quest storyline games ordered by order_index.
     """
-    service = GameService()
     return service.get_quest_storyline()
+
+@router.post("/{game_id}/complete")
+def complete_game(game_id: int, current_user: User = Depends(get_current_user)):
+    """
+    Mark a game as completed, update XP and coins, and grant achievements.
+    """
+    service.complete_game(user_id=current_user.id, game_id=game_id)
+    return {"message": "Game marked as completed and rewards applied."}
