@@ -2,6 +2,8 @@ from sqlalchemy.orm import Session
 from models import User, Achievement, UserAchievement
 from typing import Optional
 from database.connection import get_db
+from hashlib import sha256
+from datetime import datetime
 
 class UserRepository:
     """
@@ -40,3 +42,23 @@ class UserRepository:
             .filter(Achievement.reward_type == "badge")
             .all()
         )
+    
+    def create_user_from_google(self, email: str, name: str, avatar_url: str | None = None) -> User:
+        dummy_password = sha256(f"{email}{datetime.utcnow()}".encode()).hexdigest()
+
+        new_user = User(
+            username=name,
+            email=email,
+            password_hash=dummy_password,
+            avatar_url=avatar_url,
+            created_at=datetime.utcnow(),
+            updated_at=datetime.utcnow()
+        )
+
+        self.db.add(new_user)
+        self.db.commit()
+        self.db.refresh(new_user)
+        return new_user
+    
+    def get_user_by_email(self, email: str) -> User | None:
+        return self.db.query(User).filter(User.email == email).first()
