@@ -14,9 +14,7 @@ GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI", "http://localhost:8000/au
 SESSION_SECRET_KEY = os.getenv("SESSION_SECRET_KEY","some_key?")
 
 
-COGNITO_REGION = os.getenv("COGNITO_REGION")
-USER_POOL_ID = os.getenv("USER_POOL_ID")
-APP_CLIENT_ID = os.getenv("APP_CLIENT_ID")
+SECRET_KEY: str = os.getenv("SECRET_KEY", "")
+ALGORITHM: str = os.getenv("ALGORITHM", "")
+ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
-JWKS_URL = os.getenv("JWKS_URL")
-ALGORITHM = os.getenv("ALGORITHM")
