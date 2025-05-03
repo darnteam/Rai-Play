@@ -73,3 +73,10 @@ class UserRepository:
         self.db.commit()
         self.db.refresh(user)
         return user
+    
+    def get_user_by_identifier(self, identifier: str) -> User:
+        # This function returns a user by either email or username
+        user = self.db.query(User).filter(
+            (User.email == identifier) | (User.username == identifier)
+        ).first()
+        return user

@@ -14,8 +14,8 @@ def create_app() -> FastAPI:
         FastAPI: The configured FastAPI instance.
     """
     app = FastAPI(
-        title="Money Matters API",
-        description="Backend service for the Money Matters financial literacy app",
+        title="RaiPlay API",
+        description="Backend service for the RaiPlay financial literacy app",
         version="1.0.0"
     )
 

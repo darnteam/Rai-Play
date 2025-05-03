@@ -3,6 +3,10 @@ from repositories.user_repository import UserRepository
 from models.dtos import AchievementResponse
 from fastapi import HTTPException, status
 from typing import List
+from auth.auth import auth_service
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class UserService:
     """
@@ -47,3 +51,17 @@ class UserService:
         """
         achievements = self.user_repository.fetch_user_badges(user_id)
         return [AchievementResponse.model_validate(a) for a in achievements]
+    
+    def login(self, identifier: str, password: str) -> dict:
+        # Get user by email or username
+        user = self.user_repository.get_user_by_identifier(identifier)
+        if not user or not self.verify_password(password, user.password_hash):
+            raise ValueError("Invalid credentials")
+
+        # Create JWT token with the user's ID
+        access_token = auth_service.create_access_token(data={"sub": user.id})
+        
+        return {"access_token": access_token, "token_type": "bearer"}
+    
+    def verify_password(self, plain_password: str, hashed_password: str) -> bool:
+        return pwd_context.verify(plain_password, hashed_password)

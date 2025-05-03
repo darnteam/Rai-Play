@@ -7,12 +7,17 @@ from models.dtos import SignUpDTO, ConfirmSignUpDTO, LoginDTO
 from repositories.user_repository import UserRepository
 from auth.auth import auth_service
 from fastapi.responses import JSONResponse
+from services.user_service import UserService
+from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import Depends
+
 
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
 user_repository = UserRepository()
+user_service = UserService()
 oauth = OAuth()
 oauth.register(
     name="google",
@@ -86,3 +91,12 @@ def signup(payload: SignUpDTO):
     access_token = auth_service.create_access_token(user_id=new_user.id)
 
     return JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
+
+@router.post("/login")
+def login(form_data: OAuth2PasswordRequestForm = Depends() ):
+    try:
+        result = user_service.login(form_data.username, form_data.password)
+    except ValueError as e:
+        raise HTTPException(status_code=401, detail=str(e))
+    
+    return result
