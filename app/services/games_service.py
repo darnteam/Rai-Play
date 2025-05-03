@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from app.models.games import Game
+from app.models import Game
 from app.models.dtos.games_dtos import GameCreate, GameUpdate
 from app.repositories.games_repository import GamesRepository
 from typing import List, Optional
