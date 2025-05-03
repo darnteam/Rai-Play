@@ -1,7 +1,7 @@
 -- ==========================
 -- ENUM TYPES
 -- ==========================
-CREATE TYPE reward_type AS ENUM ('xp', 'coins', 'badge', 'item');
+CREATE TYPE reward_type AS ENUM ('xp', 'coins', 'badge');
 CREATE TYPE game_type AS ENUM ('quest', 'minigame');
 
 -- ==========================
@@ -31,10 +31,9 @@ CREATE TABLE games (
     description TEXT,
     icon_url TEXT,
     game_type game_type NOT NULL,
-    category VARCHAR(50),-- e.g. crypto, debit, credit
+    category VARCHAR(50), -- e.g. crypto, debit, credit
     xp_reward INTEGER DEFAULT 0,
     coin_reward INTEGER DEFAULT 0,
-    badge_id INTEGER REFERENCES badges(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -108,7 +107,6 @@ CREATE TABLE user_streaks (
     last_checkin DATE
 );
 
-
 -- ==========================
 -- VIDEOS (TikTok Style)
 -- ==========================
@@ -118,6 +116,28 @@ CREATE TABLE videos (
     url TEXT NOT NULL,
     duration_seconds INTEGER,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ==========================
+-- USER SAVED VIDEOS
+-- ==========================
+CREATE TABLE user_saved_videos (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    video_id INTEGER REFERENCES videos(id) ON DELETE CASCADE,
+    saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, video_id)
+);
+
+-- ==========================
+-- USER PLAYED GAMES
+-- ==========================
+CREATE TABLE user_games (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    game_id INTEGER REFERENCES games(id) ON DELETE CASCADE,
+    played_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, game_id)
 );
 
 -- ==========================
