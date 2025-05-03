@@ -5,6 +5,7 @@ from database.connection import get_db
 from hashlib import sha256
 from datetime import datetime
 
+
 class UserRepository:
     """
     Repository for performing database operations related to users.

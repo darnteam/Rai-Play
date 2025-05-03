@@ -10,6 +10,7 @@ from fastapi.responses import JSONResponse
 from services.user_service import UserService
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import Depends
+from utils.auth_utils import hash_password, verify_password
 
 
 
@@ -81,7 +82,7 @@ def signup(payload: SignUpDTO):
             detail="Email is already registered.",
         )
 
-    hashed_password = bcrypt.hash(payload.password)
+    hashed_password = hash_password(payload.password)
     new_user = user_repository.create_user(
         email=payload.email,
         username=payload.username,

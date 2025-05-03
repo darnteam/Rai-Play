@@ -4,9 +4,8 @@ from models.dtos import AchievementResponse
 from fastapi import HTTPException, status
 from typing import List
 from auth.auth import auth_service
-from passlib.context import CryptContext
+from utils.auth_utils import hash_password, verify_password
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class UserService:
     """
@@ -59,9 +58,9 @@ class UserService:
             raise ValueError("Invalid credentials")
 
         # Create JWT token with the user's ID
-        access_token = auth_service.create_access_token(data={"sub": user.id})
+        access_token = auth_service.create_access_token(user.id)
         
         return {"access_token": access_token, "token_type": "bearer"}
     
     def verify_password(self, plain_password: str, hashed_password: str) -> bool:
-        return pwd_context.verify(plain_password, hashed_password)
+        return verify_password(plain_password, hashed_password)
