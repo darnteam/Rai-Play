@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from database.connection import get_db
-from models import UserGame
+from models import UserGame, Game
 
 class GameRepository:
     """
@@ -19,3 +19,9 @@ class GameRepository:
             .filter(UserGame.user_id == user_id, UserGame.completed == False)
             .all()
         )
+    
+    def fetch_games_by_type(self, game_type: str):
+        """
+        Returns all games with the given game_type.
+        """
+        return self.db.query(Game).filter(Game.game_type == game_type).all()
