@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, status
+import bcrypt
 from configuration import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI
 from authlib.integrations.starlette_client import OAuth
 from authlib.oauth2.rfc6749 import OAuth2Token, OAuth2Error
@@ -57,3 +58,31 @@ async def google_auth_callback(request: Request):
 
     except OAuth2Error as e:
         raise HTTPException(status_code=400, detail=f"Google OAuth error: {str(e)}")
+    
+
+@router.post("/signup")
+def signup(payload: SignUpDTO):
+    """
+    Handles user registration:
+    - Validates email uniqueness
+    - Hashes password
+    - Stores new user
+    - Returns JWT access token
+    """
+    existing_user = user_repository.get_user_by_email(payload.email)
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email is already registered.",
+        )
+
+    hashed_password = bcrypt.hash(payload.password)
+    new_user = user_repository.create_user(
+        email=payload.email,
+        username=payload.username,
+        password_hash=hashed_password,
+    )
+
+    access_token = auth_service.create_access_token(user_id=new_user.id)
+
+    return JSONResponse(content={"access_token": access_token, "token_type": "bearer"})

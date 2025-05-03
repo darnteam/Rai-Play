@@ -1,8 +1,12 @@
 from pydantic import BaseModel, EmailStr, Field
 
+from pydantic import BaseModel, EmailStr
+
 class SignUpDTO(BaseModel):
+    username: str
     email: EmailStr
-    password: str = Field(..., min_length=8)
+    password: str
+
 
 class ConfirmSignUpDTO(BaseModel):
     email: EmailStr
@@ -11,3 +15,5 @@ class ConfirmSignUpDTO(BaseModel):
 class LoginDTO(BaseModel):
     email: EmailStr
     password: str
+
+

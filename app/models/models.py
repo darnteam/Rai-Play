@@ -1,37 +1,35 @@
 from sqlalchemy import (
-    Column, String, Integer, Text, Boolean, Date, Enum, ForeignKey, TIMESTAMP
+    Column, String, Integer, Text, Boolean, ForeignKey,
+    DateTime, Enum, UniqueConstraint
 )
 from sqlalchemy.orm import relationship, declarative_base
+from sqlalchemy.sql import func
 import enum
-from datetime import datetime
-from enum import Enum
 
 Base = declarative_base()
 
-
-# ======================
-# ENUMS
-# ======================
-class RewardType(Enum):
+# ==========================
+# ENUM TYPES
+# ==========================
+class RewardType(enum.Enum):
     xp = "xp"
     coins = "coins"
     badge = "badge"
 
+class GameType(enum.Enum):
+    quest = "quest"
+    minigame = "minigame"
 
-class GameType(Enum):
-    QUEST = "quest"
-    MINIGAME = "minigame"
 
-
-# ======================
+# ==========================
 # USERS
-# ======================
+# ==========================
 class User(Base):
-    __tablename__ = "users"
+    __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
     username = Column(String(50), unique=True, nullable=False)
-    email = Column(String(100), unique=True, nullable=False, index=True)
+    email = Column(String(100), unique=True, nullable=False)
     password_hash = Column(Text, nullable=False)
     avatar_url = Column(Text)
     xp = Column(Integer, default=0)
@@ -39,22 +37,20 @@ class User(Base):
     level = Column(Integer, default=1)
     streak_count = Column(Integer, default=0)
     longest_streak = Column(Integer, default=0)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow)
-    updated_at = Column(TIMESTAMP, default=datetime.utcnow)
+    created_at = Column(DateTime, server_default=func.now())
+    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 
-    streak = relationship("UserStreak", uselist=False, back_populates="user")
-    quest_progress = relationship("UserQuestProgress", back_populates="user")
+    # Relationships
     achievements = relationship("UserAchievement", back_populates="user")
     saved_videos = relationship("UserSavedVideo", back_populates="user")
     played_games = relationship("UserGame", back_populates="user")
-    leaderboard_entries = relationship("LeaderboardEntry", back_populates="user")
 
 
-# ======================
+# ==========================
 # GAMES
-# ======================
+# ==========================
 class Game(Base):
-    __tablename__ = "games"
+    __tablename__ = 'games'
 
     id = Column(Integer, primary_key=True)
     name = Column(String(100), nullable=False)
@@ -64,32 +60,53 @@ class Game(Base):
     category = Column(String(50))
     xp_reward = Column(Integer, default=0)
     coin_reward = Column(Integer, default=0)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow)
+    achievement_id = Column(Integer, ForeignKey('achievements.id', ondelete="SET NULL"))
+    created_at = Column(DateTime, server_default=func.now())
 
-    storyline = relationship("QuestStoryline", back_populates="game", uselist=False)
-    quest_progress = relationship("UserQuestProgress", back_populates="game")
-    played_by_users = relationship("UserGame", back_populates="game")
+    # Relationships
+    quest_storyline = relationship("QuestStoryline", back_populates="game")
+    user_games = relationship("UserGame", back_populates="game")
 
 
-# ======================
+# ==========================
 # QUEST STORYLINE
-# ======================
+# ==========================
 class QuestStoryline(Base):
-    __tablename__ = "quest_storyline"
+    __tablename__ = 'quest_storyline'
 
     id = Column(Integer, primary_key=True)
-    game_id = Column(Integer, ForeignKey("games.id", ondelete="CASCADE"), unique=True)
-    order_index = Column(Integer, unique=True, nullable=False)
+    game_id = Column(Integer, ForeignKey('games.id', ondelete="CASCADE"), nullable=False)
+    order_index = Column(Integer, nullable=False)
 
-    game = relationship("Game", back_populates="storyline")
+    game = relationship("Game", back_populates="quest_storyline")
+
+    __table_args__ = (
+        UniqueConstraint('game_id'),
+        UniqueConstraint('order_index'),
+    )
 
 
+# ==========================
+# BADGES
+# ==========================
+class Badge(Base):
+    __tablename__ = 'badges'
 
-# ======================
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+    description = Column(Text)
+    icon_url = Column(Text)
+    created_at = Column(DateTime, server_default=func.now())
+
+    # Relationships
+    achievements = relationship("Achievement", back_populates="badge")
+
+
+# ==========================
 # ACHIEVEMENTS
-# ======================
+# ==========================
 class Achievement(Base):
-    __tablename__ = "achievements"
+    __tablename__ = 'achievements'
 
     id = Column(Integer, primary_key=True)
     title = Column(String(100), nullable=False)
@@ -97,108 +114,80 @@ class Achievement(Base):
     icon_url = Column(Text)
     reward_type = Column(Enum(RewardType), nullable=False)
     reward_amount = Column(Integer, nullable=False)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow)
+    created_at = Column(DateTime, server_default=func.now())
 
+    # Relationships
+    badge_id = Column(Integer, ForeignKey('badges.id'))
+    badge = relationship("Badge", back_populates="achievements")
     user_achievements = relationship("UserAchievement", back_populates="achievement")
 
 
-# ======================
+# ==========================
 # USER ACHIEVEMENTS
-# ======================
+# ==========================
 class UserAchievement(Base):
-    __tablename__ = "user_achievements"
+    __tablename__ = 'user_achievements'
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
-    achievement_id = Column(Integer, ForeignKey("achievements.id", ondelete="CASCADE"))
-    achieved_at = Column(TIMESTAMP, default=datetime.utcnow)
+    user_id = Column(Integer, ForeignKey('users.id', ondelete="CASCADE"))
+    achievement_id = Column(Integer, ForeignKey('achievements.id', ondelete="CASCADE"))
+    achieved_at = Column(DateTime, server_default=func.now())
 
+    # Relationships
     user = relationship("User", back_populates="achievements")
     achievement = relationship("Achievement", back_populates="user_achievements")
 
-
-# ======================
-# USER STREAKS
-# ======================
-class UserStreak(Base):
-    __tablename__ = "user_streaks"
-
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
-    current_streak = Column(Integer, default=0)
-    longest_streak = Column(Integer, default=0)
-    last_checkin = Column(Date)
-
-    user = relationship("User", back_populates="streak")
+    __table_args__ = (UniqueConstraint('user_id', 'achievement_id'),)
 
 
-# ======================
+# ==========================
 # VIDEOS
-# ======================
+# ==========================
 class Video(Base):
-    __tablename__ = "videos"
+    __tablename__ = 'videos'
 
     id = Column(Integer, primary_key=True)
     title = Column(String(100), nullable=False)
     url = Column(Text, nullable=False)
     duration_seconds = Column(Integer)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow)
+    created_at = Column(DateTime, server_default=func.now())
 
-    saved_by_users = relationship("UserSavedVideo", back_populates="video")
+    # Relationships
+    user_saved_videos = relationship("UserSavedVideo", back_populates="video")
 
 
-# ======================
+# ==========================
 # USER SAVED VIDEOS
-# ======================
+# ==========================
 class UserSavedVideo(Base):
-    __tablename__ = "user_saved_videos"
+    __tablename__ = 'user_saved_videos'
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
-    video_id = Column(Integer, ForeignKey("videos.id", ondelete="CASCADE"))
-    saved_at = Column(TIMESTAMP, default=datetime.utcnow)
+    user_id = Column(Integer, ForeignKey('users.id', ondelete="CASCADE"))
+    video_id = Column(Integer, ForeignKey('videos.id', ondelete="CASCADE"))
+    saved_at = Column(DateTime, server_default=func.now())
 
+    # Relationships
     user = relationship("User", back_populates="saved_videos")
-    video = relationship("Video", back_populates="saved_by_users")
+    video = relationship("Video", back_populates="user_saved_videos")
+
+    __table_args__ = (UniqueConstraint('user_id', 'video_id'),)
 
 
-# ======================
+# ==========================
 # USER PLAYED GAMES
-# ======================
+# ==========================
 class UserGame(Base):
-    __tablename__ = "user_games"
+    __tablename__ = 'user_games'
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
-    game_id = Column(Integer, ForeignKey("games.id", ondelete="CASCADE"))
+    user_id = Column(Integer, ForeignKey('users.id', ondelete="CASCADE"))
+    game_id = Column(Integer, ForeignKey('games.id', ondelete="CASCADE"))
     completed = Column(Boolean, default=False)
-    played_at = Column(TIMESTAMP, default=datetime.utcnow)
+    played_at = Column(DateTime, server_default=func.now())
 
+    # Relationships
     user = relationship("User", back_populates="played_games")
-    game = relationship("Game", back_populates="played_by_users")
+    game = relationship("Game", back_populates="user_games")
 
-
-# ======================
-# LEADERBOARDS
-# ======================
-class Leaderboard(Base):
-    __tablename__ = "leaderboards"
-
-    id = Column(Integer, primary_key=True)
-    name = Column(String(100), nullable=False)
-    type = Column(String(50))
-    created_at = Column(TIMESTAMP, default=datetime.utcnow)
-
-    entries = relationship("LeaderboardEntry", back_populates="leaderboard")
-
-
-class LeaderboardEntry(Base):
-    __tablename__ = "leaderboard_entries"
-
-    id = Column(Integer, primary_key=True)
-    leaderboard_id = Column(Integer, ForeignKey("leaderboards.id", ondelete="CASCADE"))
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
-    score = Column(Integer, nullable=False)
-    recorded_at = Column(TIMESTAMP, default=datetime.utcnow)
-
-    leaderboard = relationship("Leaderboard", back_populates="entries")
-    user = relationship("User", back_populates="leaderboard_entries")
+    __table_args__ = (UniqueConstraint('user_id', 'game_id'),)
