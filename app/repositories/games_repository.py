@@ -10,15 +10,23 @@ class GameRepository:
     def __init__(self):
         self.db: Session = next(get_db())
 
-    def fetch_uncompleted_games(self, user_id: int):
+    def fetch_games_by_completion(self, user_id: int, completed: bool):
         """
-        Fetch all uncompleted games for the given user from user_games table.
+        Fetch games for the given user based on completion status.
+
+        Args:
+            user_id (int): The ID of the user.
+            completed (bool): True for completed games, False for uncompleted games.
+
+        Returns:
+            List[UserGame]: List of user games filtered by completion status.
         """
         return (
             self.db.query(UserGame)
-            .filter(UserGame.user_id == user_id, UserGame.completed == False)
+            .filter(UserGame.user_id == user_id, UserGame.completed == completed)
             .all()
         )
+
     
     def fetch_games_by_type(self, game_type: str):
         """

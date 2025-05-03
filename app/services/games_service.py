@@ -10,11 +10,18 @@ class GameService:
     def __init__(self):
         self.repository = GameRepository()
 
-    def get_uncompleted_games(self, user_id: int) -> List[GameResponse]:
+    def get_games_by_completion(self, user_id: int, completed: bool) -> List[GameResponse]:
         """
-        Return all games that the user has not completed yet.
+        Return all games for the user filtered by completion status.
+
+        Args:
+            user_id (int): The ID of the user.
+            completed (bool): True for completed games, False for uncompleted games.
+
+        Returns:
+            List[GameResponse]: List of game DTOs.
         """
-        games = self.repository.fetch_uncompleted_games(user_id)
+        games = self.repository.fetch_games_by_completion(user_id, completed)
         return [GameResponse.model_validate(game) for game in games]
     
     def get_all_minigames(self) -> List[GameResponse]:

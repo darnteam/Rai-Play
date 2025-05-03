@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from services.games_service import GameService
 from models.dtos import GameResponse
 from typing import List
@@ -9,12 +9,15 @@ router = APIRouter(prefix="/games", tags=["Games"])
 
 service = GameService()
 
-@router.get("/uncompleted", response_model=List[GameResponse])
-def get_uncompleted_games(current_user: User = Depends(get_current_user)):
+@router.get("/", response_model=List[GameResponse])
+def get_games_by_completion(
+    completed: bool = Query(False, description="Set to true to get completed games."),
+    current_user: User = Depends(get_current_user)
+):
     """
-    Fetch a list of games that the authenticated user has not completed yet.
+    Fetch a list of games based on completion status for the authenticated user.
     """
-    return service.get_uncompleted_games(current_user.id)
+    return service.get_games_by_completion(current_user.id, completed)
 
 
 @router.get("/minigames", response_model=List[GameResponse])

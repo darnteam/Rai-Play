@@ -59,19 +59,6 @@ CREATE TABLE badges (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- ==========================
--- USER QUEST PROGRESS
--- ==========================
-CREATE TABLE user_quest_progress (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    game_id INTEGER REFERENCES games(id) ON DELETE CASCADE,
-    completed BOOLEAN DEFAULT FALSE,
-    progress INTEGER DEFAULT 0,
-    completed_at TIMESTAMP,
-    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(user_id, game_id)
-);
 
 -- ==========================
 -- ACHIEVEMENTS
