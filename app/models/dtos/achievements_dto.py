@@ -1,11 +1,12 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
 
 class AchievementResponse(BaseModel):
     id: int
     title: str
-    description: str | None = None
-    icon_url: str | None = None
+    description: Optional[str] = None
+    icon_url: Optional[str]= None
     reward_type: str
     reward_amount: int
     created_at: datetime

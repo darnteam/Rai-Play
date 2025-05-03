@@ -43,7 +43,7 @@ class UserRepository:
             .all()
         )
     
-    def create_user_from_google(self, email: str, name: str, avatar_url: str | None = None) -> User:
+    def create_user_from_google(self, email: str, name: str, avatar_url: Optional[str] = None) -> User:
         dummy_password = sha256(f"{email}{datetime.utcnow()}".encode()).hexdigest()
 
         new_user = User(
@@ -60,7 +60,7 @@ class UserRepository:
         self.db.refresh(new_user)
         return new_user
     
-    def get_user_by_email(self, email: str) -> User | None:
+    def get_user_by_email(self, email: str) -> Optional[User] :
         return self.db.query(User).filter(User.email == email).first()
     
     def create_user(self, email: str, username: str, password_hash: str) -> User:

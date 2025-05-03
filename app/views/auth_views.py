@@ -3,7 +3,7 @@ import bcrypt
 from configuration import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI
 from authlib.integrations.starlette_client import OAuth
 from authlib.oauth2.rfc6749 import OAuth2Token, OAuth2Error
-from app.models.dtos.auth_dto import SignUpDTO, ConfirmSignUpDTO, LoginDTO
+from models.dtos import SignUpDTO, ConfirmSignUpDTO, LoginDTO
 from repositories.user_repository import UserRepository
 from auth.auth import auth_service
 from fastapi.responses import JSONResponse

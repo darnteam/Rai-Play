@@ -60,7 +60,7 @@ class AuthService:
         }
         return jwt.encode(payload, self.SECRET_KEY, algorithm=self.ALGORITHM)
 
-    def verify_token(self, token: str) -> Dict[str, int | str]:
+    def verify_token(self, token: str) -> Dict[str, int]:
         """
         Decode and validate a JWT token.
 
