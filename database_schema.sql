@@ -1,52 +1,146 @@
--- Enable UUID generation (required for gen_random_uuid())
-CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+-- ==========================
+-- ENUM TYPES
+-- ==========================
+CREATE TYPE reward_type AS ENUM ('xp', 'coins', 'badge', 'item');
+CREATE TYPE game_type AS ENUM ('quest', 'minigame');
 
--- =============================
--- USERS TABLE (managed by Cognito)
--- =============================
+-- ==========================
+-- USERS
+-- ==========================
 CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    cognito_sub UUID UNIQUE NOT NULL, -- Cognito user’s unique identifier (from JWT `sub`)
-    email VARCHAR(255) UNIQUE NOT NULL,
+    id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
-    avatar_url VARCHAR(255),
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    last_login TIMESTAMP,
-    status VARCHAR(20) DEFAULT 'active', -- e.g., active, inactive, banned
-    account_type VARCHAR(20) DEFAULT 'standard', -- e.g., standard, premium
-    role VARCHAR(20) DEFAULT 'child' -- values: child, parent, admin
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    avatar_url TEXT,
+    xp INTEGER DEFAULT 0,
+    coins INTEGER DEFAULT 0,
+    level INTEGER DEFAULT 1,
+    streak_count INTEGER DEFAULT 0,
+    longest_streak INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- =============================
--- PARENT-CHILD RELATIONSHIP TABLE
--- =============================
-CREATE TABLE parent_child_links (
-    parent_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    child_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (parent_id, child_id)
+-- ==========================
+-- GAMES
+-- ==========================
+CREATE TABLE games (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    icon_url TEXT,
+    game_type game_type NOT NULL,
+    category VARCHAR(50),-- e.g. crypto, debit, credit
+    xp_reward INTEGER DEFAULT 0,
+    coin_reward INTEGER DEFAULT 0,
+    badge_id INTEGER REFERENCES badges(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- =============================
--- EXAMPLE: BONUSES (if needed)
--- =============================
-CREATE TABLE bonuses (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    child_id UUID REFERENCES users(id) ON DELETE CASCADE,
+-- ==========================
+-- QUEST STORYLINE (ORDERED GAMES)
+-- ==========================
+CREATE TABLE quest_storyline (
+    id SERIAL PRIMARY KEY,
+    game_id INTEGER NOT NULL REFERENCES games(id) ON DELETE CASCADE,
+    order_index INTEGER NOT NULL,
+    UNIQUE(game_id),
+    UNIQUE(order_index)
+);
+
+-- ==========================
+-- BADGES
+-- ==========================
+CREATE TABLE badges (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    icon_url TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ==========================
+-- USER QUEST PROGRESS
+-- ==========================
+CREATE TABLE user_quest_progress (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    game_id INTEGER REFERENCES games(id) ON DELETE CASCADE,
+    completed BOOLEAN DEFAULT FALSE,
+    progress INTEGER DEFAULT 0,
+    completed_at TIMESTAMP,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, game_id)
+);
+
+-- ==========================
+-- ACHIEVEMENTS
+-- ==========================
+CREATE TABLE achievements (
+    id SERIAL PRIMARY KEY,
     title VARCHAR(100) NOT NULL,
     description TEXT,
-    points INT DEFAULT 0,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    icon_url TEXT,
+    reward_type reward_type NOT NULL,
+    reward_amount INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- =============================
--- OPTIONAL: TRACK LOGIN EVENTS
--- =============================
-CREATE TABLE login_events (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-    event_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    ip_address INET,
-    user_agent TEXT
+-- ==========================
+-- USER ACHIEVEMENTS
+-- ==========================
+CREATE TABLE user_achievements (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    achievement_id INTEGER REFERENCES achievements(id) ON DELETE CASCADE,
+    achieved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, achievement_id)
 );
+
+-- ==========================
+-- STREAK TRACKER
+-- ==========================
+CREATE TABLE user_streaks (
+    user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    current_streak INTEGER DEFAULT 0,
+    longest_streak INTEGER DEFAULT 0,
+    last_checkin DATE
+);
+
+
+-- ==========================
+-- VIDEOS (TikTok Style)
+-- ==========================
+CREATE TABLE videos (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    url TEXT NOT NULL,
+    duration_seconds INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ==========================
+-- LEADERBOARD
+-- ==========================
+CREATE TABLE leaderboards (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    type VARCHAR(50), -- e.g. 'xp', 'coins', 'streak'
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE leaderboard_entries (
+    id SERIAL PRIMARY KEY,
+    leaderboard_id INTEGER REFERENCES leaderboards(id) ON DELETE CASCADE,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    score INTEGER NOT NULL,
+    recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ==========================
+-- INDEXING FOR PERFORMANCE
+-- ==========================
+CREATE INDEX idx_user_email ON users(email);
+CREATE INDEX idx_user_quest_progress_user ON user_quest_progress(user_id);
+CREATE INDEX idx_leaderboard_score ON leaderboard_entries(score DESC);
