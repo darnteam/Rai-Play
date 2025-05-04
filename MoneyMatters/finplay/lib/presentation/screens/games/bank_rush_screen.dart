@@ -75,11 +75,11 @@ class _BankRushScreenState extends State<BankRushScreen> with TickerProviderStat
     },
   ];
   final List<Map<String, dynamic>> _offers = [
-    {'item': 'New sneakers', 'price': 45},
-    {'item': 'Music ticket', 'price': 20},
-    {'item': 'Game pass', 'price': 15},
-    {'item': 'Fast food', 'price': 10},
-    {'item': 'Headphones', 'price': 30},
+    {'item': 'New sneakers', 'price': 45.0},
+    {'item': 'Music ticket', 'price': 20.0},
+    {'item': 'Game pass', 'price': 15.0},
+    {'item': 'Fast food', 'price': 10.0},
+    {'item': 'Headphones', 'price': 30.0},
   ];
   final List<Map<String, dynamic>> _events = [
     {'event': '⚠️ Subscription charged €10 — forgot to cancel!', 'effect': -10},
@@ -105,9 +105,9 @@ class _BankRushScreenState extends State<BankRushScreen> with TickerProviderStat
     },
   ];
   final List<Map<String, dynamic>> _goals = [
-    {'goal': 'Buy a bike', 'amount': 100, 'achieved': false},
-    {'goal': 'Attend event', 'amount': 60, 'achieved': false},
-    {'goal': 'Go on trip', 'amount': 200, 'achieved': false},
+    {'goal': 'Buy a bike', 'amount': 100.0, 'achieved': false},
+    {'goal': 'Attend event', 'amount': 60.0, 'achieved': false},
+    {'goal': 'Go on trip', 'amount': 200.0, 'achieved': false},
   ];
 
   @override
@@ -188,11 +188,11 @@ class _BankRushScreenState extends State<BankRushScreen> with TickerProviderStat
 
   void _triggerEvent() {
     final events = [
-      {'text': 'Unexpected medical bill! Pay €50 from checking.', 'amount': -50},
-      {'text': 'Found €20 on the street! Added to checking.', 'amount': 20},
-      {'text': 'Won a small lottery! €100 added to checking.', 'amount': 100},
-      {'text': 'Phone bill due. Pay €30 from checking.', 'amount': -30},
-      {'text': 'Birthday gift from grandma! €50 added to checking.', 'amount': 50},
+      {'text': 'Unexpected medical bill! Pay €50 from checking.', 'amount': -50.0},
+      {'text': 'Found €20 on the street! Added to checking.', 'amount': 20.0},
+      {'text': 'Won a small lottery! €100 added to checking.', 'amount': 100.0},
+      {'text': 'Phone bill due. Pay €30 from checking.', 'amount': -30.0},
+      {'text': 'Birthday gift from grandma! €50 added to checking.', 'amount': 50.0},
     ];
 
     final event = events[Random().nextInt(events.length)];
@@ -238,27 +238,38 @@ class _BankRushScreenState extends State<BankRushScreen> with TickerProviderStat
     });
   }
 
-  void _handleBankAction(String action, [double amount = 0]) {
+  void _handleBankAction(String action, [double? amount]) {
     setState(() {
+      final transferAmount = amount ?? 10.0;
       switch (action) {
         case 'deposit':
-          if (_checking >= amount) {
-            _checking -= amount;
-            _savings += amount;
-            _feedback = 'Successfully deposited €$amount to savings!';
+          if (_checking >= transferAmount) {
+            _checking -= transferAmount;
+            _savings += transferAmount;
+            _feedback = 'Successfully deposited €${transferAmount.toStringAsFixed(2)} to savings!';
             _xp += 10;
           } else {
             _feedback = 'Insufficient funds in checking account!';
           }
           break;
         case 'withdraw':
-          if (_savings >= amount) {
-            _savings -= amount;
-            _checking += amount;
-            _feedback = 'Successfully withdrew €$amount from savings!';
+          if (_savings >= transferAmount) {
+            _savings -= transferAmount;
+            _checking += transferAmount;
+            _feedback = 'Successfully withdrew €${transferAmount.toStringAsFixed(2)} from savings!';
             _xp += 5;
           } else {
             _feedback = 'Insufficient funds in savings account!';
+          }
+          break;
+        case 'transfer':
+          if (_checking >= transferAmount) {
+            _checking -= transferAmount;
+            _savings += transferAmount;
+            _feedback = 'Successfully transferred €${transferAmount.toStringAsFixed(2)} to savings!';
+            _xp += 8;
+          } else {
+            _feedback = 'Insufficient funds for transfer!';
           }
           break;
       }
@@ -270,9 +281,10 @@ class _BankRushScreenState extends State<BankRushScreen> with TickerProviderStat
   void _handleSpend(int idx) {
     final offer = _offers[idx];
     setState(() {
-      if (_checking >= offer['price']) {
-        _checking -= offer['price'];
-        _feedback = 'Bought ${offer['item']} for €${offer['price']}.';
+      final price = offer['price'] as double;
+      if (_checking >= price) {
+        _checking -= price;
+        _feedback = 'Bought ${offer['item']} for €${price.toStringAsFixed(2)}.';
       } else {
         _feedback = 'Not enough in checking!';
       }
@@ -281,8 +293,9 @@ class _BankRushScreenState extends State<BankRushScreen> with TickerProviderStat
 
   void _handleGoal(int idx) {
     setState(() {
-      if (_savings >= _goals[idx]['amount'] && !_goals[idx]['achieved']) {
-        _savings -= _goals[idx]['amount'];
+      final amount = _goals[idx]['amount'] as double;
+      if (_savings >= amount && !_goals[idx]['achieved']) {
+        _savings -= amount;
         _goals[idx]['achieved'] = true;
         _goalsAchieved++;
         _feedback = 'Goal achieved: ${_goals[idx]['goal']}!';

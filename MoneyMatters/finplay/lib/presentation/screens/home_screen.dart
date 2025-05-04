@@ -76,7 +76,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     ),
                                   ),
                                   Text(
-                                    'Alice',
+                                    'Artin',
                                     style: theme.textTheme.headlineMedium?.copyWith(
                                       color: AppTheme.raiffeisen['secondary'],
                                       fontWeight: FontWeight.bold,

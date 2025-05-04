@@ -124,7 +124,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with SingleTicker
                               Column(
                                 children: [
                                   Text(
-                                    "Alex Johnson",
+                                    "Artin Rexhepi",
                                     style: theme.textTheme.headlineSmall?.copyWith(
                                       color: theme.colorScheme.onPrimary,
                                       fontWeight: FontWeight.bold,
@@ -189,9 +189,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with SingleTicker
             delegate: _SliverAppBarDelegate(
               TabBar(
                 controller: _tabController,
-                labelColor: theme.colorScheme.primary,
+                labelColor: theme.colorScheme.onSurface.withOpacity(0.99),
                 unselectedLabelColor: theme.colorScheme.onSurface.withOpacity(0.7),
-                indicatorColor: theme.colorScheme.primary,
+                indicatorColor: theme.colorScheme.onSurface.withOpacity(0.99),
                 tabs: const [
                   Tab(text: "Completed"),
                   Tab(text: "Store"),
@@ -348,7 +348,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with SingleTicker
                           Text(
                             '+${game.coinsEarned}',
                             style: theme.textTheme.titleMedium?.copyWith(
-                              color: theme.colorScheme.primary,
+                              color: theme.colorScheme.inversePrimary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -374,7 +374,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with SingleTicker
                     Text(
                       'Score: ${game.score}/${game.maxScore}',
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.primary,
+                        color: theme.colorScheme.inversePrimary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -755,50 +755,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with SingleTicker
         const SizedBox(height: 24),
 
         // No saved quizzes message
-        Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: theme.colorScheme.primary.withOpacity(0.2),
-              width: 1,
-            ),
-          ),
-          child: Column(
-            children: [
-              Icon(
-                Icons.bookmark_border,
-                color: theme.colorScheme.primary,
-                size: 48,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                "No Saved Quizzes",
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                "Bookmark quizzes to practice them later",
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurface.withOpacity(0.7),
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              AnimatedButton(
-                text: "Explore Quizzes",
-                icon: Icons.quiz,
-                onPressed: () {
-                  // Navigate to quizzes
-                },
-              ),
-            ],
-          ),
-        ),
       ],
     );
   }
@@ -871,7 +827,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with SingleTicker
                           child: Text(
                             content.type.toUpperCase(),
                             style: theme.textTheme.labelSmall?.copyWith(
-                              color: theme.colorScheme.primary,
+                              color: theme.colorScheme.onSurface.withOpacity(0.7),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
