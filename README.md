@@ -31,45 +31,6 @@ RaiPlay is an interactive financial literacy mobile application developed for th
 - **API**: RESTful API design with standardized endpoint structure
 - **AI Integration**: AI-powered financial assistance chatbot
 
-## 📱 Application Screens
-
-- **Home**: Personalized dashboard showing user progress, streaks, and daily quests
-- **Games**: Library of financial literacy games categorized by difficulty and topics
-- **Quest Map**: Visual journey through the learning path with unlockable content
-- **Videos**: Educational content library with save functionality
-- **Chat**: AI assistant interface for financial questions
-- **Profile**: User achievements, badges, and statistics
-- **Leaderboard**: User rankings based on XP and achievements
-
-## 💻 Project Structure
-
-The project follows a clean architecture with clear separation of concerns:
-
-### Backend (FastAPI)
-```
-app/
-├── app.py                # Main application entry point
-├── configuration.py      # Environment configuration
-├── auth/                 # Authentication components
-├── models/               # Data models and DTOs
-├── repositories/         # Data access layer
-├── services/             # Business logic
-├── utils/                # Helper utilities
-└── views/                # API endpoints
-```
-
-### Frontend (Flutter)
-```
-lib/
-├── main.dart             # Entry point
-├── presentation/         # UI components
-│   ├── screens/          # App screens
-│   ├── widgets/          # Reusable UI elements
-│   └── theme/            # App theming
-├── services/             # Backend communication
-├── models/               # Data models
-└── providers/            # State management
-```
 
 ## 🚀 Getting Started
 
@@ -117,11 +78,10 @@ Detailed documentation is available in the `Documentation/Code Documentation` di
 
 ## 👥 Hackathon Team
 
-- [Team Member 1] - Frontend Developer
-- [Team Member 2] - Backend Developer
-- [Team Member 3] - UI/UX Designer
-- [Team Member 4] - Content Creator
-- [Team Member 5] - Project Manager
+- Artin Rexhepi - Mobile App Engineer
+- Daris Dragusha - Data Scientist
+- Art Jashari - Embedded Engineer
+
 
 ## 📝 License
 
