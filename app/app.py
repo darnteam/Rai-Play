@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from views import routers
 import uvicorn
 from fastapi.routing import APIRouter
+from starlette.middleware.sessions import SessionMiddleware
+import os
+from configuration import SESSION_SECRET_KEY
 
 def create_app() -> FastAPI:
     """
@@ -11,8 +14,8 @@ def create_app() -> FastAPI:
         FastAPI: The configured FastAPI instance.
     """
     app = FastAPI(
-        title="Money Matters API",
-        description="Backend service for the Money Matters financial literacy app",
+        title="RaiPlay API",
+        description="Backend service for the RaiPlay financial literacy app",
         version="1.0.0"
     )
 
@@ -24,6 +27,11 @@ def create_app() -> FastAPI:
 
 app: FastAPI = create_app()
 
+app.add_middleware(
+    SessionMiddleware,
+    secret_key= SESSION_SECRET_KEY
+)
+
 if __name__ == "__main__":
     # Run the application with live reloading
-    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
