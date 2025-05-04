@@ -6,7 +6,7 @@
 
 RaiPlay is an interactive financial literacy mobile application developed for the JunctionxTirana Hackathon. The platform aims to make financial education engaging and accessible to users of all ages through gamification, personalized learning paths, and an AI-powered financial assistant.
 
-## 🌟 Key Features
+## Key Features
 
 - **Interactive Learning Journey**: Guided quest-based progression through financial literacy concepts
 - **Mini-Games**: Engaging games that teach budgeting, investing, and financial decision-making
@@ -32,7 +32,7 @@ RaiPlay is an interactive financial literacy mobile application developed for th
 - **AI Integration**: AI-powered financial assistance chatbot
 
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Backend Setup
 1. Navigate to the `app` directory
@@ -45,7 +45,7 @@ RaiPlay is an interactive financial literacy mobile application developed for th
 2. Install dependencies: `flutter pub get`
 3. Run the application: `flutter run`
 
-## 📊 Learning Journey
+##  Learning Journey
 
 The RaiPlay application guides users through a structured financial literacy curriculum:
 
@@ -57,7 +57,7 @@ The RaiPlay application guides users through a structured financial literacy cur
 
 Each section contains theory, interactive games, and assessments to reinforce learning.
 
-## 🧩 Gamification Mechanics
+##  Gamification Mechanics
 
 - **XP System**: Users earn experience points for completing activities
 - **Leveling**: Progress through levels as XP accumulates
@@ -66,7 +66,7 @@ Each section contains theory, interactive games, and assessments to reinforce le
 - **In-app Currency**: Virtual coins earned through activities
 - **Quests**: Daily and weekly challenges to encourage engagement
 
-## 📄 Documentation
+## Documentation
 
 Detailed documentation is available in the `Documentation/Code Documentation` directory:
 
@@ -83,11 +83,11 @@ Detailed documentation is available in the `Documentation/Code Documentation` di
 - Art Jashari - Embedded Engineer
 
 
-## 📝 License
+## License
 
 This project was created as part of the JunctionxTirana Hackathon and is intended for demonstration purposes.
 
-## 🙏 Acknowledgements
+## Acknowledgements
 
 - [Raiffeisen Bank Albania](https://www.raiffeisen.al/) for the challenge inspiration
 - [Junction](https://www.hackjunction.com/) for organizing the hackathon
