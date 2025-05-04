@@ -16,7 +16,7 @@ RaiPlay is an interactive financial literacy mobile application developed for th
 - **Social Elements**: Leaderboards to foster friendly competition
 - **Personalized Experience**: Content adapts based on user progress and interests
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 ### Frontend
 - **Framework**: Flutter
@@ -76,7 +76,7 @@ Detailed documentation is available in the `Documentation/Code Documentation` di
 - [Backend Architecture](Documentation/Code%20Documentation/4_Backend_Architecture.md)
 - [Visual Component Synopsis](Documentation/Code%20Documentation/5_Visual_Component_Synopsis.md)
 
-## 👥 Hackathon Team
+## Hackathon Team
 
 - Artin Rexhepi - Mobile App Engineer
 - Daris Dragusha - Data Scientist
