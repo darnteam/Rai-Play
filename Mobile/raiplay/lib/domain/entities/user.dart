@@ -1,5 +1,6 @@
+import 'package:RaiPlay/domain/entities/badge.dart';
 import 'package:equatable/equatable.dart';
-import 'package:finplay/domain/entities/badge.dart';
+
 
 class User extends Equatable {
   final String id;

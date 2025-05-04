@@ -1,4 +1,3 @@
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -48,3 +47,10 @@ __pydantic_model__.json
 *.img
 *.container
 docker-compose.override.yml
+
+# Obsidian configuration files
+.obsidian/
+.trash/
+.DS_Store
+workspace
+workspace.json

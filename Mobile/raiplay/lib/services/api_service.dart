@@ -119,4 +119,28 @@ class ApiService {
     }
     return 'Sign up failed. Please try again.';
   }
+
+  static Future<String> chat(String message) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/chat/'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode({
+          'message': message,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        return responseData['reply'] as String;
+      } else {
+        throw Exception('Failed to get chat response');
+      }
+    } catch (e) {
+      throw Exception('Error connecting to chat service: $e');
+    }
+  }
 }

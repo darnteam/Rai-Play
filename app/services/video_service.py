@@ -8,6 +8,8 @@ class VideoService:
 
     def get_all_videos(self) -> List[VideoResponse]:
         videos = self.repository.fetch_all_videos()
+        for video in videos:
+            print(video)
         return [VideoResponse.model_validate(video) for video in videos]
 
     def get_saved_videos(self, user_id: int) -> List[VideoResponse]:

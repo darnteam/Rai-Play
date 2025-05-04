@@ -1,4 +1,4 @@
-import 'package:finplay/presentation/widgets/draggable_item.dart';
+import '/presentation/widgets/draggable_item.dart';
 import 'package:flutter/material.dart';
 import '../screens/games/lemonade_budget_game.dart';
 

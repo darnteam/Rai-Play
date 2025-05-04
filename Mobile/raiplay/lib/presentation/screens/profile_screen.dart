@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/animated_button.dart';
+import 'dart:math';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -168,9 +169,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with SingleTicker
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  _buildStatItem("1,245", "XP"),
-                                  _buildStatItem("32", "Quests"),
-                                  _buildStatItem("157", "Coins"),
+                                  _buildStatItem("920", "XP"),
+                                  _buildStatItem("8", "Quests"),
+                                  _buildStatItem("540", "Coins"),
                                 ],
                               ),
                             ],
@@ -468,7 +469,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with SingleTicker
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '157 Coins',
+                    '540 Coins',
                     style: theme.textTheme.headlineSmall?.copyWith(
                       color: theme.colorScheme.onPrimary,
                       fontWeight: FontWeight.bold,
@@ -608,6 +609,115 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with SingleTicker
     );
   }
 
+  // Helper method to generate random code
+  String _generateRandomCode() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    final random = Random();
+    final codeBuffer = StringBuffer();
+
+    // Generate 4 groups of 4 characters
+    for (int group = 0; group < 4; group++) {
+      for (int i = 0; i < 4; i++) {
+        codeBuffer.write(chars[random.nextInt(chars.length)]);
+      }
+      if (group < 3) codeBuffer.write('-');
+    }
+
+    return codeBuffer.toString();
+  }
+
+  void _showCodeDialog(BuildContext context, ThemeData theme, _StoreItem item) {
+    final code = _generateRandomCode();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Column(
+            children: [
+              Icon(
+                Icons.celebration,
+                color: theme.colorScheme.primary,
+                size: 48,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Congratulations!',
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: theme.colorScheme.primary,
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Here\'s your redemption code for:',
+                style: theme.textTheme.bodyLarge,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                item.title,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: theme.colorScheme.primary.withOpacity(0.3),
+                    width: 2,
+                  ),
+                ),
+                child: Text(
+                  code,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1,
+                    color: theme.colorScheme.inversePrimary,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'Make sure to save this code. You\'ll need it to redeem your reward!',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurface.withOpacity(0.7),
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: theme.colorScheme.primary,
+                foregroundColor: theme.colorScheme.onPrimary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                minimumSize: const Size(double.infinity, 48),
+              ),
+              child: const Text('Got it!'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _showPurchaseDialog(BuildContext context, ThemeData theme, _StoreItem item) {
     showDialog(
       context: context,
@@ -696,6 +806,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> with SingleTicker
               onPressed: () {
                 // Handle purchase
                 Navigator.of(context).pop();
+                // Show code dialog
+                _showCodeDialog(context, theme, item);
                 // Show success message
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

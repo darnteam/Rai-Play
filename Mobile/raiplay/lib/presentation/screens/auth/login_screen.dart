@@ -95,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   // Logo or App name
                   Text(
-                    'FinPlay',
+                    'RaiPlay',
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                           color: Colors.white,

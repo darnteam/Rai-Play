@@ -193,7 +193,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               context,
                               Icons.trending_up,
                               'Total XP',
-                              '1,220',
+                              '920',
                             ),
                             _buildStatItem(
                               context,

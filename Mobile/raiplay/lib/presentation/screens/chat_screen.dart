@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../services/api_service.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   const ChatScreen({super.key});
@@ -13,19 +14,29 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   final ScrollController _scrollController = ScrollController();
   final List<_ChatMessage> _messages = [];
   bool _isTyping = false;
+  String _errorMessage = '';
 
   // Predefined responses for common financial questions
   final Map<String, String> _predefinedResponses = {
     'what is a budget': 'A budget is a plan for how you will spend your money. It helps you track your income and expenses so you can save for your goals!',
-    'how do i save money': 'Great question! Start by setting a savings goal, tracking your spending, and putting aside a small amount each week. Even saving 5-10 per week can add up over time!',
-    'what is interest': 'Interest is either money you earn when you save (like in a savings account) or money you pay when you borrow (like with a credit card). It\'s usually calculated as a percentage of the amount.',
-    'what is a credit score': 'A credit score is a number (usually between 300-850) that represents how reliable you are with borrowed money. Higher scores help you get better interest rates on loans in the future!',
-    'what is cryptocurrency': 'Cryptocurrency is a digital or virtual currency that uses cryptography for security. Bitcoin and Ethereum are popular examples. Unlike regular currency, it\'s not controlled by any government.',
-    'what is investing': 'Investing means putting your money into something with the hope it will grow over time. This could be stocks, bonds, real estate, or even education to increase your future earning potential!',
-    'how do taxes work': 'Taxes are money we pay to the government to fund public services like schools, roads, and healthcare. When you earn money, a portion of it goes to taxes based on how much you earn.',
-    'what is a stock': 'A stock is a small piece of ownership in a company. When you buy stocks, you become a partial owner of that company and can benefit if the company grows and becomes more valuable!',
-    'what is a bank account': 'A bank account is a safe place to keep your money. Checking accounts let you easily spend your money, while savings accounts help you save and earn some interest.',
-    'how do credit cards work': 'Credit cards let you borrow money to make purchases. You need to pay back what you spend - ideally the full amount each month. If you don\'t pay in full, you\'ll owe extra money as interest!',
+    'how do i save money':
+        'Great question! Start by setting a savings goal, tracking your spending, and putting aside a small amount each week. Even saving 5-10 per week can add up over time!',
+    'what is interest':
+        'Interest is either money you earn when you save (like in a savings account) or money you pay when you borrow (like with a credit card). It\'s usually calculated as a percentage of the amount.',
+    'what is a credit score':
+        'A credit score is a number (usually between 300-850) that represents how reliable you are with borrowed money. Higher scores help you get better interest rates on loans in the future!',
+    'what is cryptocurrency':
+        'Cryptocurrency is a digital or virtual currency that uses cryptography for security. Bitcoin and Ethereum are popular examples. Unlike regular currency, it\'s not controlled by any government.',
+    'what is investing':
+        'Investing means putting your money into something with the hope it will grow over time. This could be stocks, bonds, real estate, or even education to increase your future earning potential!',
+    'how do taxes work':
+        'Taxes are money we pay to the government to fund public services like schools, roads, and healthcare. When you earn money, a portion of it goes to taxes based on how much you earn.',
+    'what is a stock':
+        'A stock is a small piece of ownership in a company. When you buy stocks, you become a partial owner of that company and can benefit if the company grows and becomes more valuable!',
+    'what is a bank account':
+        'A bank account is a safe place to keep your money. Checking accounts let you easily spend your money, while savings accounts help you save and earn some interest.',
+    'how do credit cards work':
+        'Credit cards let you borrow money to make purchases. You need to pay back what you spend - ideally the full amount each month. If you don\'t pay in full, you\'ll owe extra money as interest!',
   };
 
   @override
@@ -47,11 +58,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     });
   }
 
-  void _handleSubmit(String text) {
+  Future<void> _handleSubmit(String text) async {
     if (text.trim().isEmpty) return;
 
     _messageController.clear();
-    
     setState(() {
       // Add user message
       _messages.add(_ChatMessage(
@@ -59,30 +69,20 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         isUser: true,
         timestamp: DateTime.now(),
       ));
-      
+
       // Show typing indicator
       _isTyping = true;
+      _errorMessage = '';
     });
-    
+
     _scrollToBottom();
-    
-    // Simulate AI response after a short delay
-    Future.delayed(const Duration(seconds: 1), () {
+
+    try {
+      // Get response from API
+      final response = await ApiService.chat(text);
+
       setState(() {
         _isTyping = false;
-        
-        // Generate response based on predefined responses or a default
-        final String normalizedQuestion = text.trim().toLowerCase();
-        String response = 'I don\'t have an answer for that yet. In the future, I\'ll be able to answer all your financial questions!';
-        
-        // Check if the question contains any of our predefined keywords
-        for (final entry in _predefinedResponses.entries) {
-          if (normalizedQuestion.contains(entry.key)) {
-            response = entry.value;
-            break;
-          }
-        }
-        
         // Add AI response
         _messages.add(_ChatMessage(
           text: response,
@@ -90,18 +90,23 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           timestamp: DateTime.now(),
         ));
       });
-      
-      _scrollToBottom();
-    });
+    } catch (e) {
+      setState(() {
+        _isTyping = false;
+        _errorMessage = 'Failed to get response. Please try again.';
+      });
+    }
+
+    _scrollToBottom();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('FinBot Assistant'),
+        title: const Text('RaiBot Assistant'),
         centerTitle: true,
         backgroundColor: theme.colorScheme.primary,
         foregroundColor: theme.colorScheme.onPrimary,
@@ -126,7 +131,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               ),
             ),
           ),
-          
+
           // Message list
           Expanded(
             child: Container(
@@ -142,7 +147,19 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               ),
             ),
           ),
-          
+
+          // Error message
+          if (_errorMessage.isNotEmpty)
+            Container(
+              padding: const EdgeInsets.all(8),
+              color: Colors.red.shade50,
+              child: Text(
+                _errorMessage,
+                style: TextStyle(color: Colors.red.shade700),
+                textAlign: TextAlign.center,
+              ),
+            ),
+
           // Typing indicator
           if (_isTyping)
             Container(
@@ -179,7 +196,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ],
               ),
             ),
-          
+
           // Message input bar
           Container(
             padding: const EdgeInsets.all(8),
@@ -227,7 +244,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       ),
                     ),
                   ),
-                  
+
                   // Send button
                   Container(
                     margin: const EdgeInsets.only(left: 8),
@@ -251,7 +268,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       ),
     );
   }
-  
+
   Widget _buildSuggestedQuestion(ThemeData theme, String question) {
     return Container(
       margin: const EdgeInsets.only(right: 8),
@@ -272,7 +289,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           child: Text(
             question,
             style: TextStyle(
-              color: theme.colorScheme.primary,
+              color: theme.colorScheme.inversePrimary,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -280,10 +297,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       ),
     );
   }
-  
+
   Widget _buildMessageBubble(ThemeData theme, _ChatMessage message) {
     final isUser = message.isUser;
-    
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Row(
@@ -302,15 +319,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             ),
             const SizedBox(width: 8),
           ],
-          
+
           // Message bubble
           Flexible(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
-                color: isUser 
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.surface,
+                color: isUser ? theme.colorScheme.primary : theme.colorScheme.surface,
                 borderRadius: BorderRadius.circular(16).copyWith(
                   bottomLeft: isUser ? null : const Radius.circular(0),
                   bottomRight: isUser ? const Radius.circular(0) : null,
@@ -330,27 +345,23 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   Text(
                     message.text,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: isUser 
-                          ? theme.colorScheme.onPrimary
-                          : theme.colorScheme.onSurface,
+                      color: isUser ? theme.colorScheme.onPrimary : theme.colorScheme.onSurface,
                     ),
                   ),
-                  
+
                   // Timestamp
                   const SizedBox(height: 4),
                   Text(
                     _formatTimestamp(message.timestamp),
                     style: theme.textTheme.labelSmall?.copyWith(
-                      color: isUser 
-                          ? theme.colorScheme.onPrimary.withOpacity(0.7)
-                          : theme.colorScheme.onSurface.withOpacity(0.5),
+                      color: isUser ? theme.colorScheme.onPrimary.withOpacity(0.7) : theme.colorScheme.onSurface.withOpacity(0.5),
                     ),
                   ),
                 ],
               ),
             ),
           ),
-          
+
           if (isUser) ...[
             const SizedBox(width: 8),
             // User avatar
@@ -367,11 +378,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       ),
     );
   }
-  
+
   String _formatTimestamp(DateTime timestamp) {
     final now = DateTime.now();
     final difference = now.difference(timestamp);
-    
+
     if (difference.inMinutes < 1) {
       return 'Just now';
     } else if (difference.inHours < 1) {
@@ -388,7 +399,7 @@ class _ChatMessage {
   final String text;
   final bool isUser;
   final DateTime timestamp;
-  
+
   _ChatMessage({
     required this.text,
     required this.isUser,
