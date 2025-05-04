@@ -11,4 +11,4 @@ class VideoResponse(BaseModel):
 
     class Config:
         orm_mode = True
-        from_attribute = True
+        from_attributes = True
