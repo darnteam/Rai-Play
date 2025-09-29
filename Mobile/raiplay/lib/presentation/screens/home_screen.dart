@@ -339,7 +339,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              '2/3 Complete',
+                              '0/2 Complete',
                               style: theme.textTheme.labelLarge?.copyWith(
                                 color: AppTheme.raiffeisen['secondary'],
                                 fontWeight: FontWeight.w600,
